@@ -1,19 +1,20 @@
 'use strict';
 
 const PokemonItem = (poke) => {
-  const item = $('<div class="item grey lighten-2"></div>');
+  const item = $('<div class="col s2 grey lighten-2 item"></div>');
+  const item2=$('<div class="trapecio"></div>');
   const name = $('<h6 class="capital">'+poke.pokemon.pokemon_species.name+'</h6>');
-  const image=$('<img src="http://serebii.net/art/th/'+ poke.pokemon.entry_number +'.png" alt="'+poke.pokemon.pokemon_species.name+'" width="100px"/>');
+  const image=$('<img src="http://serebii.net/art/th/'+ poke.pokemon.entry_number +'.png" alt="'+poke.pokemon.pokemon_species.name+'" width="100px" height="150px" class="valign-wrapper"/>');
   const pbola=$('<img class="iconoPoke" src="icon/pokeball_gray.png" id="'+poke.pokemon.entry_number+'">');
   const cor=$('<img class="iconoPoke" src="icon/valentines-heart.png">');
   const arrow=$('<img class="iconoPoke" src="icon/data.png">');
-  // let modal = $('.modal');
 
     item.append(image);
-    item.append(name);
-    item.append(pbola);
-    item.append(cor);
-    item.append(arrow);
+    item2.append(name);
+    item2.append(pbola);
+    item2.append(cor);
+    item2.append(arrow);
+    item.append(item2);
 
   pbola.on('click',(e)=>{
     const event= e.target;
@@ -23,66 +24,70 @@ const PokemonItem = (poke) => {
     if(e.target.className == "iconoPoke"){
       console.log("coincide clase");
       console.log(poke.pokemon.pokemon_species.url)
-    // console.log(images);
-    // var modalImg = document.getElementById("img01");
-    // body.style.overflow="hidden";
-    $('.modal').show();
+      console.log("http://pokeapi.co/api/v2/pokemon/"+poke.pokemon.pokemon_species.name+"/")
+      // var habilidades="http://pokeapi.co/api/v2/pokemon/"+poke.pokemon.pokemon_species.name+"/";
+      var habilidades;
+      getJSON('http://pokeapi.co/api/v2/pokemon/'+poke.pokemon.pokemon_species.name+'/', (err, json) => {
+        if (err) { return alert(err.message);}
+        var pokemonHab = json;
+        console.log(pokemonHab);
+        habilidades=pokemonHab.abilities;
+        var abilities= habilidades.forEach((habilidad)=>{
+          habilidad.ability.name;
+          console.log(habilidad.ability.name);
+        })
+        console.log(habilidades);
+      });
+
+      getJSON('http://pokeapi.co/api/v2/pokemon-species/'+poke.pokemon.entry_number+'/', (err, json) => {
+        if (err) { return alert(err.message);}
+        var pokemonInfo = json;
+        console.log(pokemonInfo);
+        var description=pokemonInfo.flavor_text_entries[3].flavor_text;
+        console.log(description);
+        $('#describe').text(description);
+      });
+
+    $('.modal1').show();
     $('.may').text(poke.pokemon.pokemon_species.name);
     $('#img01').attr("src","http://serebii.net/art/th/"+ poke.pokemon.entry_number +".png");
-    // modalImg.src = e.target.nextElementSibling.src;
+
     }
 
     $('#close').on('click',(e)=>{
       e.preventDefault();
         console.log("entre para cerrar");
-        console.log(event.target);
-        $('.modal').hide();
-        // modal.style.display="none";
-        // body.style.overflow="visible";
+
+        $('.modal1').hide();
+
     });
   });
-
-  // function cerrar (event){
-  // event.preventDefault();
-  // // console.log(event.target);
-  //   modal.style.display="none";
-  //   body.style.overflow="visible";
-  // }
-
-
 
   return item;
 }
 
 const Modal=()=>{
-  const myModal=$('<div class="modal"></div>');
+  const myModal=$('<div class="modal1"></div>');
+  const divWhite=$('<div class="modalWhite"></div>');
   const spanClose=$('<span id="close">&times;</span>');
-  const divTitle=$('<div class="title"></div>');
-  const h2=$('<h2 class="may title"></h2>');
+  const divTitle=$('<div class=""></div>');
+  const h2=$('<h2 class="may center-align"></h2>');
   const imgp=$('<img class="modal-content" id="img01">');
+  const divDesc=$('<div class="desc1"></div>')
+  const descrip=$('<p id="describe"></p>');
 
 myModal.append(spanClose);
+divWhite.append(divTitle);
 divTitle.append(h2);
 divTitle.append(imgp);
-myModal.append(divTitle);
+divDesc.append(descrip)
+divWhite.append(divDesc);
+myModal.append(divWhite);
 
 return myModal;
 
 }
-// <div id="myModal" class="modal">
-//       <span id="close">&times;</span>
-//       <div class="title">
-//         <h2 class="may gray titleh1">proyect title</h2>
-//         <div class="cajaStar"><div class="black">-</div><span class="fa fa-star small gray"></span><div class="black">-</div></div>
-//       </div>
-//       <img class="modal-content" id="img01">
-//       <!-- <div id="caption"></div> -->
-//       <div class="parrafomod">
-//         <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="#" class="verdec">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-//         <span>Client: <a href="#" class="verdec">Start Bootstrap</a>  Date: <a href="#" class="verdec">April 2014</a>  Service: <a href="#" class="verdec">Web Development</a></span>
-//         <button class="js-btclose cerrar" value="close"><i class="fa fa-times"></i>Close</button>
-//       </div>
-//   </div>
+
 
 const reRender = (container,filter,update) => {
   container.empty();
@@ -108,7 +113,8 @@ const Search = (update) => {
   const ico=$('<i class="material-icons prefix">search</i>');
   const input  = $('<input id= "icon_prefix" type="text">');
   const label=$('<label for="icon_prefix">Ingrese el nombre del pokémon</label>');
-  const card=$('<div class="card col s1 offset-s3">A-Z</div>');
+  const card=$('<div class="col s1 offset-s3"></div>');
+  const cardDiv=$('<div class="green darken-4 divAZ"><h5 class="white-text center-align">A-Z</h5></div>')
   const row2=$('<div class="row"></div>');
   const result = $('<div class="result"></div>');
 
@@ -116,6 +122,7 @@ const Search = (update) => {
   inputfield.append(ico);
   inputfield.append(input);
   inputfield.append(label);
+  card.append(cardDiv);
   row1.append(card);
   row2.append(result);
   search.append(row1);
