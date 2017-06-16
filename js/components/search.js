@@ -26,17 +26,33 @@ const PokemonItem = (poke) => {
       console.log(poke.pokemon.pokemon_species.url)
       console.log("http://pokeapi.co/api/v2/pokemon/"+poke.pokemon.pokemon_species.name+"/")
       // var habilidades="http://pokeapi.co/api/v2/pokemon/"+poke.pokemon.pokemon_species.name+"/";
-      var habilidades;
+      var habilidades,tipos;
       getJSON('http://pokeapi.co/api/v2/pokemon/'+poke.pokemon.pokemon_species.name+'/', (err, json) => {
         if (err) { return alert(err.message);}
         var pokemonHab = json;
         console.log(pokemonHab);
         habilidades=pokemonHab.abilities;
+        $('.hab').empty();
         var abilities= habilidades.forEach((habilidad)=>{
           habilidad.ability.name;
+          $('.power').append('<p class=hab>'+habilidad.ability.name+'</p>')
           console.log(habilidad.ability.name);
         })
         console.log(habilidades);
+        var weight=pokemonHab.weight/10;
+        console.log(weight);
+        $('#w').text(weight);
+        var height=pokemonHab.height/10;
+        console.log(height);
+        $('#h').text(height);
+
+        tipos=pokemonHab.types;
+        $('.tp').empty();
+        var types=tipos.forEach((tipo)=>{
+          tipo.type.name;
+          $('.types').append('<span class="tp '+tipo.type.name+'">'+ tipo.type.name +'</span>')
+          console.log(tipo.type.name);
+        })
       });
 
       getJSON('http://pokeapi.co/api/v2/pokemon-species/'+poke.pokemon.entry_number+'/', (err, json) => {
@@ -71,17 +87,27 @@ const Modal=()=>{
   const divWhite=$('<div class="modalWhite"></div>');
   const spanClose=$('<span id="close">&times;</span>');
   const divTitle=$('<div class=""></div>');
-  const h2=$('<h2 class="may center-align"></h2>');
+  const h2=$('<h2 class="may center-align capital"></h2>');
   const imgp=$('<img class="modal-content" id="img01">');
   const divDesc=$('<div class="desc1"></div>')
   const descrip=$('<p id="describe"></p>');
+  const panel=$('<div class="card-panel light-blue darken-1 brochure"></div>');
+  const span1=$('<p>Altura: <span id="h"></span> m</p>');
+  const span2=$('<p>Peso: <span id="w"></span> kg</p>');
+  const parra3=$('<p class="power">Habilidades: </p>');
+  const parra4=$('<div class="types">Tipos:</div>');
 
 myModal.append(spanClose);
 divWhite.append(divTitle);
 divTitle.append(h2);
 divTitle.append(imgp);
 divDesc.append(descrip)
+panel.append(span1);
+panel.append(span2);
+panel.append(parra3);
 divWhite.append(divDesc);
+divWhite.append(panel);
+divWhite.append(parra4);
 myModal.append(divWhite);
 
 return myModal;
