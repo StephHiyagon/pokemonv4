@@ -18,53 +18,46 @@ const PokemonItem = (poke) => {
 
   pbola.on('click',(e)=>{
     const event= e.target;
-    console.log(e.target);
-    console.log(e.target.className);
     state.selectedPokemon=poke.pokemon;
     if(e.target.className == "iconoPoke"){
-      console.log("coincide clase");
-      console.log(poke.pokemon.pokemon_species.url)
-      console.log("http://pokeapi.co/api/v2/pokemon/"+poke.pokemon.pokemon_species.name+"/")
-      // var habilidades="http://pokeapi.co/api/v2/pokemon/"+poke.pokemon.pokemon_species.name+"/";
       var habilidades,tipos;
       getJSON('http://pokeapi.co/api/v2/pokemon/'+poke.pokemon.pokemon_species.name+'/', (err, json) => {
         if (err) { return alert(err.message);}
         var pokemonHab = json;
-        console.log(pokemonHab);
         habilidades=pokemonHab.abilities;
         $('.hab').empty();
         var abilities= habilidades.forEach((habilidad)=>{
           habilidad.ability.name;
           $('.power').append('<p class=hab>'+habilidad.ability.name+'</p>')
-          console.log(habilidad.ability.name);
+
         })
-        console.log(habilidades);
+
         var weight=pokemonHab.weight/10;
-        console.log(weight);
         $('#w').text(weight);
         var height=pokemonHab.height/10;
-        console.log(height);
         $('#h').text(height);
 
         tipos=pokemonHab.types;
         $('.tp').empty();
         var types=tipos.forEach((tipo)=>{
           tipo.type.name;
-          $('.types').append('<span class="tp '+tipo.type.name+'">'+ tipo.type.name +'</span>')
-          console.log(tipo.type.name);
+          $('.types').append('<span class="tp  white-text '+tipo.type.name+'">'+ tipo.type.name +'</span>')
+
         })
       });
 
       getJSON('http://pokeapi.co/api/v2/pokemon-species/'+poke.pokemon.entry_number+'/', (err, json) => {
         if (err) { return alert(err.message);}
         var pokemonInfo = json;
-        console.log(pokemonInfo);
         var description=pokemonInfo.flavor_text_entries[3].flavor_text;
-        console.log(description);
         $('#describe').text(description);
+        $('.cat').empty();
+        var categoria=pokemonInfo.genera[2].genus;
+        $('.catego').append('<span class="cat white-text">'+categoria+'</span>');
       });
 
     $('.modal1').show();
+    $('body').addClass('hidden');
     $('.may').text(poke.pokemon.pokemon_species.name);
     $('#img01').attr("src","http://serebii.net/art/th/"+ poke.pokemon.entry_number +".png");
 
@@ -72,10 +65,8 @@ const PokemonItem = (poke) => {
 
     $('#close').on('click',(e)=>{
       e.preventDefault();
-        console.log("entre para cerrar");
-
         $('.modal1').hide();
-
+        $('body').removeClass('hidden');
     });
   });
 
@@ -86,24 +77,34 @@ const Modal=()=>{
   const myModal=$('<div class="modal1"></div>');
   const divWhite=$('<div class="modalWhite"></div>');
   const spanClose=$('<span id="close">&times;</span>');
-  const divTitle=$('<div class=""></div>');
   const h2=$('<h2 class="may center-align capital"></h2>');
+  const item = $('<div class="col s2 grey lighten-2 itemM"></div>');
+  const item2=$('<div class="trapecioM"></div>');
   const imgp=$('<img class="modal-content" id="img01">');
+  const pbola=$('<img class="iconoPokeM" src="icon/pokeball_gray.png" >');
+  const cor=$('<img class="iconoPokeM" src="icon/valentines-heart.png">');
+  const arrow=$('<img class="iconoPokeM" src="icon/data.png">');
   const divDesc=$('<div class="desc1"></div>')
   const descrip=$('<p id="describe"></p>');
   const panel=$('<div class="card-panel light-blue darken-1 brochure"></div>');
-  const span1=$('<p>Altura: <span id="h"></span> m</p>');
-  const span2=$('<p>Peso: <span id="w"></span> kg</p>');
-  const parra3=$('<p class="power">Habilidades: </p>');
-  const parra4=$('<div class="types">Tipos:</div>');
+  const span1=$('<p class="white-text">Altura: <span id="h" class="white-text"></span> m</p>');
+  const span2=$('<p class="white-text">Peso: <span id="w" class="white-text"></span> kg</p>');
+  const parra2=$('<p class="catego white-text">Categoría: </p>');
+  const parra3=$('<p class="power white-text">Habilidades: </p>');
+  const parra4=$('<div class="types">Tipo:</div>');
 
 myModal.append(spanClose);
-divWhite.append(divTitle);
-divTitle.append(h2);
-divTitle.append(imgp);
+divWhite.append(h2);
+divWhite.append(item);
+item.append(imgp);
+item2.append(pbola);
+item2.append(cor);
+item2.append(arrow);
+item.append(item2);
 divDesc.append(descrip)
 panel.append(span1);
 panel.append(span2);
+panel.append(parra2);
 panel.append(parra3);
 divWhite.append(divDesc);
 divWhite.append(panel);
@@ -126,10 +127,7 @@ const reRender = (container,filter,update) => {
     });
     container.append(pokemonItem);
   });
-  // filteredPokemons.forEach((pokemon)=>{
-  //   pokemon.pokemon_species.name;
-  //   console.log(pokemon.pokemon_species.name);
-  // })
+
 }
 
 const Search = (update) => {
